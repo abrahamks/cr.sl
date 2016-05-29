@@ -4,6 +4,9 @@
 	<title>Redirecting...</title>
 </head>
 <body>
-Redirecting to <%= "#{@long_url} from #{@short_url}. . ." %> 
+Redirecting to <%= "#{@url[:long_url]} from #{@short_url}. . ." %> 
+<script>
+	window.location = "<%= "#{@url[:long_url]} "%>"; 
+</script>
 </body>
 </html>

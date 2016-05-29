@@ -1,0 +1,10 @@
+common: &common
+  rabbitmq_host: 127.0.0.1
+  rabbitmq_port: 5672
+  rabbitmq_queue_name: url_click_log
+
+development:
+  <<: *common
+
+production:
+  <<: *common
