@@ -1,0 +1,11 @@
+common: &common
+  database_name: url_shortener_development
+  user: dbadmin
+  host: 127.0.0.1
+  port: 5432
+
+development:
+  <<: *common
+
+production:
+  <<: *common

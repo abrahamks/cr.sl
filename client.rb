@@ -10,13 +10,14 @@ require 'bunny'
 set :bind, '0.0.0.0'
 set :port, 80
 
-APP_CONFIG = YAML.load_file("config/config.yml")['common']
+APP_CONFIG = YAML.load_file("config/config.yml")['development']
+DATABASE_CONFIG = YAML.load_file("config/database.yml")['development']
 Tilt.register Tilt::ERBTemplate, 'html.erb'
 
-DB = Sequel.postgres('url_shortener_development', 
-                    :user=>'dbadmin',
-                    :host=>'127.0.0.1',
-                    :port=>5432, :loggers => [Logger.new($stdout)])
+DB = Sequel.postgres(DATABASE_CONFIG['database_name'], 
+                    :user=>DATABASE_CONFIG['user'],
+                    :host=>DATABASE_CONFIG['host'],
+                    :port=>DATABASE_CONFIG['port'], :loggers => [Logger.new($stdout)])
 cache = Hash.new
 
 not_found do
@@ -31,7 +32,6 @@ get '/:url' do
       puts "#{key} #{value}"
     end
     @short_url = params[:url]
-    # TODO: check in memory database first rather than query to db
     if cache[@short_url].nil?
       @url = DB[:urls][:short_url => "#{@short_url}"]
       if @url.nil?
@@ -43,6 +43,7 @@ get '/:url' do
       @url = cache[@short_url]
     end
     send_msg @url[:id], request.ip, occurred_at
+    status 302
     erb :index
   end
 end
